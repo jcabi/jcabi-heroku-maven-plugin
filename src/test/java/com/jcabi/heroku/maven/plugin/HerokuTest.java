@@ -81,10 +81,10 @@ public final class HerokuTest {
                 "jcabi"
             ).clone(this.temp.newFolder("heroku"));
             Assert.fail("exception was expected");
-        } catch (IllegalStateException ex) {
+        } catch (IllegalArgumentException ex) {
             MatcherAssert.assertThat(
                 ex.getMessage(),
-                Matchers.containsString("Permission denied (publickey)")
+                Matchers.containsString("Cloning into ")
             );
         }
     }
