@@ -57,14 +57,6 @@ public final class HerokuTest {
     public transient TemporaryFolder temp = new TemporaryFolder();
 
     /**
-     * Configure logging.
-     */
-    @BeforeClass
-    public static void initLog() {
-        StaticLoggerBinder.getSingleton().setMavenLog(new SystemStreamLog());
-    }
-
-    /**
      * Heroku can execute simple git command.
      * @throws Exception If something is wrong
      */
