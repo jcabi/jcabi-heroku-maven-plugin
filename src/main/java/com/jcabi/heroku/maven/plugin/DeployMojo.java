@@ -166,6 +166,16 @@ public final class DeployMojo extends AbstractMojo {
                     .toString()
             );
             repo.add("Procfile", this.procfile.trim());
+            final File systemProps = new File(
+                this.project.getBasedir(), "system.properties");
+            if (systemProps.exists()) {
+                repo.add(systemProps);
+            }
+            final File env = new File(
+                this.project.getBasedir(), ".env");
+            if (env.exists()) {
+                repo.add(env);
+            }
         } catch (java.io.IOException ex) {
             throw new MojoFailureException("failed to save files", ex);
         }

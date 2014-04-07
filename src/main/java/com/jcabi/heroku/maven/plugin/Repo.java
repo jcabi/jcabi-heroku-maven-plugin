@@ -64,7 +64,7 @@ final class Repo {
     /**
      * Public ctor.
      * @param engine Git engine
-     * @param file Location of repository
+     * @param file   Location of repository
      */
     public Repo(@NotNull final Git engine, @NotNull final File file) {
         this.git = engine;
@@ -73,7 +73,7 @@ final class Repo {
 
     /**
      * Add new file.
-     * @param name Name of it
+     * @param name    Name of it
      * @param content Content of the file to write (overwrite)
      * @throws IOException If fails
      */
@@ -82,6 +82,37 @@ final class Repo {
         final File dir = new File(this.path);
         final File file = new File(dir, name);
         FileUtils.writeStringToFile(file, content);
+        this.git.exec(dir, "add", name);
+        Logger.info(
+            this,
+            "File %s updated, %[size]s",
+            file,
+            file.length()
+        );
+    }
+
+    /**
+     * Add new file.
+     *
+     * @param content The file to write (overwrite)
+     * @throws IOException If fails
+     */
+    public void add(@NotNull final File content) throws IOException {
+        this.add(content.getName(), content);
+    }
+
+    /**
+     * Add new file.
+     *
+     * @param name Name of it
+     * @param content The file to write (overwrite)
+     * @throws IOException If fails
+     */
+    public void add(@NotNull final String name, @NotNull final File content)
+        throws IOException {
+        final File dir = new File(this.path);
+        final File file = new File(dir, name);
+        FileUtils.copyFile(content, file);
         this.git.exec(dir, "add", name);
         Logger.info(
             this,
