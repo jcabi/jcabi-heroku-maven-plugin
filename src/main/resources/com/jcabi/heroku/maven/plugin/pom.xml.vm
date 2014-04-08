@@ -110,7 +110,7 @@
                                     <overWriteIfNewer>true</overWriteIfNewer>
                                     <outputDirectory>${dollar}{basedir}</outputDirectory>
                                     <failOnMissingClassifierArtifact>true</failOnMissingClassifierArtifact>
-                                    <stripVersion>true</stripVersion>
+                                    <stripversion>${stripversion}</stripversion>
                                 </configuration>
                             </execution>
                         </executions>
