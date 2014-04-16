@@ -127,6 +127,41 @@ public final class DeployMojo extends AbstractMojo {
     private transient String[] artifacts;
 
     /**
+     * Strips the version from dependency jars.
+     */
+    @MojoParameter(
+        required = false,
+        defaultValue = "true",
+        description = "Strips the version from the dependencies jar files"
+    )
+    private transient boolean stripversion;
+
+    /**
+     * Sets the files to include.
+     */
+    @MojoParameter(
+        required = false,
+        description = "List of files to include, relative to basedir"
+    )
+    private transient File[] files;
+
+    /**
+     * Setzs the files to include to target/heroku.
+     * @param fils The files relative to basedir
+     */
+    public void setFiles(final File[] fils) {
+        this.files = fils;
+    }
+
+    /**
+     * Set the stripversion option.
+     * @param stripVersion Shall the version been striped from the file name
+     */
+    public void setStripversion(final boolean stripVersion) {
+        this.stripversion = stripVersion;
+    }
+
+    /**
      * Set skip option.
      * @param skp Shall we skip execution?
      */
@@ -163,9 +198,15 @@ public final class DeployMojo extends AbstractMojo {
                 ).set("project", this.project)
                     .set("deps", this.deps())
                     .set("timestamp", System.currentTimeMillis())
+                    .set("stripversion", this.stripversion)
                     .toString()
             );
             repo.add("Procfile", this.procfile.trim());
+            for (File file : this.files) {
+                if (file.exists()) {
+                    repo.add(file);
+                }
+            }
         } catch (java.io.IOException ex) {
             throw new MojoFailureException("failed to save files", ex);
         }
