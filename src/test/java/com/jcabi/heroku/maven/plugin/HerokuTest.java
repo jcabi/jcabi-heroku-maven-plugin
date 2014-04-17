@@ -70,7 +70,7 @@ public final class HerokuTest {
                 "jcabi"
             ).clone(this.temp.newFolder());
             Assert.fail("exception was expected");
-        } catch (IllegalArgumentException ex) {
+        } catch (final IllegalArgumentException ex) {
             MatcherAssert.assertThat(
                 ex.getMessage(),
                 Matchers.containsString("Cloning into ")

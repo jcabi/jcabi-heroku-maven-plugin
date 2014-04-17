@@ -113,7 +113,7 @@ final class Git {
     public String exec(@NotNull final File dir, @NotNull final String... args) {
         final List<String> commands = new ArrayList<String>(args.length + 1);
         commands.add("git");
-        for (String arg : args) {
+        for (final String arg : args) {
             commands.add(arg);
         }
         Logger.info(this, "%s:...", StringUtils.join(commands, " "));

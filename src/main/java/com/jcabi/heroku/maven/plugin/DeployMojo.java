@@ -166,7 +166,7 @@ public final class DeployMojo extends AbstractMojo {
                     .toString()
             );
             repo.add("Procfile", this.procfile.trim());
-        } catch (java.io.IOException ex) {
+        } catch (final java.io.IOException ex) {
             throw new MojoFailureException("failed to save files", ex);
         }
         repo.commit();
@@ -208,7 +208,7 @@ public final class DeployMojo extends AbstractMojo {
                 file,
                 new File(this.project.getBuild().getDirectory())
             );
-        } catch (java.io.IOException ex) {
+        } catch (final java.io.IOException ex) {
             throw new MojoFailureException("failed to initialize git", ex);
         }
     }
@@ -233,7 +233,7 @@ public final class DeployMojo extends AbstractMojo {
         final List<Artifact> deps = new ArrayList<Artifact>(
             this.artifacts.length
         );
-        for (String coordinates : this.artifacts) {
+        for (final String coordinates : this.artifacts) {
             final String[] parts = coordinates.split(":");
             // @checkstyle MagicNumber (1 line)
             if (parts.length != 5) {

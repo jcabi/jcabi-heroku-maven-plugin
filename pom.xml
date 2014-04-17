@@ -33,7 +33,7 @@
     <parent>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi</artifactId>
-        <version>0.7.22</version>
+        <version>1.5.1</version>
     </parent>
     <artifactId>jcabi-heroku-maven-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -73,30 +73,30 @@
         <dependency>
             <groupId>com.jcabi</groupId>
             <artifactId>jcabi-aspects</artifactId>
-            <version>0.7.22</version>
         </dependency>
         <dependency>
             <groupId>com.jcabi</groupId>
             <artifactId>jcabi-manifests</artifactId>
-            <version>0.7.22</version>
             <!-- for invoker tests only -->
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.jcabi</groupId>
             <artifactId>jcabi-log</artifactId>
-            <version>0.7.22</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jcabi</groupId>
+            <artifactId>jcabi-xml</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.jcabi</groupId>
             <artifactId>jcabi-velocity</artifactId>
-            <version>0.7.22</version>
         </dependency>
         <dependency>
             <!-- Forward all calls to SLF4J to Maven log. -->
             <groupId>com.jcabi</groupId>
             <artifactId>jcabi-maven-slf4j</artifactId>
-            <version>0.7.22</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -119,7 +119,7 @@
         <dependency>
             <groupId>com.rexsl</groupId>
             <artifactId>rexsl-test</artifactId>
-            <version>0.4.15</version>
+            <version>0.13.3</version>
         </dependency>
         <dependency>
             <groupId>xml-apis</groupId>
@@ -250,4 +250,22 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>qulice</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.qulice</groupId>
+                        <artifactId>qulice-maven-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>findbugs:.*</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
