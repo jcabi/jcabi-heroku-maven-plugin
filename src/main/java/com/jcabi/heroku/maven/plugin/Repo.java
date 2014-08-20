@@ -38,6 +38,7 @@ import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.CharEncoding;
 
 /**
  * Local Git repository.
@@ -81,7 +82,7 @@ final class Repo {
         throws IOException {
         final File dir = new File(this.path);
         final File file = new File(dir, name);
-        FileUtils.writeStringToFile(file, content);
+        FileUtils.writeStringToFile(file, content, CharEncoding.UTF_8);
         this.git.exec(dir, "add", name);
         Logger.info(
             this,

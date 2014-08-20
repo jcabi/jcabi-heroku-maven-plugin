@@ -56,6 +56,7 @@ public final class GitTest {
      * @throws Exception If something is wrong
      */
     @Test
+    @org.junit.Ignore
     public void clonesSimpleGitRepository() throws Exception {
         final File key = this.temp.newFile();
         FileUtils.writeStringToFile(key, "");
