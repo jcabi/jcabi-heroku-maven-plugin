@@ -31,6 +31,7 @@ package com.jcabi.heroku.maven.plugin;
 
 import java.io.File;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.CharEncoding;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
@@ -74,7 +75,9 @@ public final class RepoTest {
             Matchers.is(true)
         );
         MatcherAssert.assertThat(
-            FileUtils.readFileToString(new File(folder, name)),
+            FileUtils.readFileToString(
+                new File(folder, name), CharEncoding.UTF_8
+            ),
             Matchers.startsWith("\u0433 text content")
         );
     }
