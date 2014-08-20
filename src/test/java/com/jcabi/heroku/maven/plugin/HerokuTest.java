@@ -73,7 +73,7 @@ public final class HerokuTest {
         } catch (final IllegalArgumentException ex) {
             MatcherAssert.assertThat(
                 ex.getMessage(),
-                Matchers.containsString("Cloning into ")
+                Matchers.containsString("Non-zero exit code ")
             );
         }
     }

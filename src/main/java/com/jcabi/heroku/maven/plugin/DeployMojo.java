@@ -134,10 +134,8 @@ public final class DeployMojo extends AbstractMojo {
         this.skip = skp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
+    @SuppressWarnings("PMD.PrematureDeclaration")
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         if (this.skip) {
