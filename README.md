@@ -5,6 +5,7 @@
 
 [![Build Status](https://travis-ci.org/jcabi/jcabi-heroku-maven-plugin.svg?branch=master)](https://travis-ci.org/jcabi/jcabi-heroku-maven-plugin)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.jcabi/jcabi-heroku-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.jcabi/jcabi-heroku-maven-plugin)
+[![Javadoc](https://javadoc-emblem.rhcloud.com/doc/com.jcabi/jcabi-heroku-maven-plugin/badge.svg)](http://www.javadoc.io/doc/com.jcabi/jcabi-heroku-maven-plugin)
 
 More details are here: [heroku.jcabi.com](http://heroku.jcabi.com/index.html)
 
