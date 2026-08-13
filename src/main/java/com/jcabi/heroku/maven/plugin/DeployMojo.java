@@ -1,4 +1,4 @@
-/**
+/*
  * SPDX-FileCopyrightText: Copyright (c) 2012-2025 Yegor Bugayenko
  * SPDX-License-Identifier: MIT
  */
@@ -13,12 +13,12 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
-import org.jfrog.maven.annomojo.annotations.MojoGoal;
-import org.jfrog.maven.annomojo.annotations.MojoParameter;
-import org.jfrog.maven.annomojo.annotations.MojoPhase;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
@@ -28,78 +28,61 @@ import org.slf4j.impl.StaticLoggerBinder;
  * @version $Id$
  * @since 0.4
  */
-@MojoGoal("deploy")
-@MojoPhase("deploy")
+@Mojo(
+    name = "deploy",
+    defaultPhase = LifecyclePhase.DEPLOY,
+    threadSafe = true
+)
 public final class DeployMojo extends AbstractMojo {
 
     /**
      * Maven project.
      */
-    @MojoParameter(
-        expression = "${project}",
-        required = true,
-        readonly = true,
-        description = "Maven project"
-    )
+    @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private transient MavenProject project;
 
     /**
      * Setting.xml.
      */
-    @MojoParameter(
-        expression = "${settings}",
-        required = true,
-        readonly = true,
-        description = "Maven settings.xml reference"
-    )
+    @Parameter(defaultValue = "${settings}", required = true, readonly = true)
     private transient Settings settings;
 
     /**
      * Shall we skip execution?
      */
-    @MojoParameter(
-        defaultValue = "false",
-        required = false,
-        description = "Skips execution"
-    )
+    @Parameter(defaultValue = "false")
     private transient boolean skip;
 
     /**
      * Server ID from settings.xml.
      */
-    @MojoParameter(
-        defaultValue = "heroku.com",
-        required = false,
-        description = "Server ID from settings.xml"
-    )
+    @Parameter(defaultValue = "heroku.com")
     private transient String server;
 
     /**
      * Application name.
      */
-    @MojoParameter(
-        required = true,
-        description = "Heroku application name"
-    )
+    @Parameter(required = true)
     private transient String name;
 
     /**
      * Content of {@code Procfile}.
      */
-    @MojoParameter(
-        required = true,
-        description = "Content of Procfile"
-    )
+    @Parameter(required = true)
     private transient String procfile;
 
     /**
      * List of artifacts to download.
      */
-    @MojoParameter(
-        required = true,
-        description = "Artifacts to download during deployment"
-    )
+    @Parameter(required = true)
     private transient String[] artifacts;
+
+    /**
+     * Public ctor.
+     */
+    public DeployMojo() {
+        // nothing to initialize
+    }
 
     /**
      * Set skip option.

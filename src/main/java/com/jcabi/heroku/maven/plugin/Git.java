@@ -1,4 +1,4 @@
-/**
+/*
  * SPDX-FileCopyrightText: Copyright (c) 2012-2025 Yegor Bugayenko
  * SPDX-License-Identifier: MIT
  */
@@ -10,6 +10,7 @@ import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotNull;
@@ -72,7 +73,8 @@ final class Git {
                 "set -x && %s -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i '%s' $@",
                 Git.SSH,
                 kfile.getAbsolutePath()
-            )
+            ),
+            StandardCharsets.UTF_8
         );
         file.setExecutable(true);
     }
