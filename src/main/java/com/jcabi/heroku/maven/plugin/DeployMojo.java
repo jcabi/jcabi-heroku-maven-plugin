@@ -183,8 +183,8 @@ public final class DeployMojo extends AbstractMojo {
             this.artifacts.length
         );
         for (final String coordinates : this.artifacts) {
-            final String[] parts = coordinates.split(":");
-            if (parts.length != 5) {
+            final String[] parts = coordinates.split(":", -1);
+            if (parts.length != 5 || parts[4].isEmpty()) {
                 throw new MojoFailureException(
                     String.format(
                         "Maven artifact coordinates '%s' is not absolute",

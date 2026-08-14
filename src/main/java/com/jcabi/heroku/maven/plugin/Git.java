@@ -98,7 +98,6 @@ final class Git {
         FileUtils.writeStringToFile(
             file,
             String.format(
-                // @checkstyle LineLength (1 line)
                 "set -x && %s -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i '%s' $@",
                 Git.SSH,
                 pem.getAbsolutePath()
