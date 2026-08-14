@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
@@ -21,15 +22,11 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * Git engine.
- *
- * @author Yegor Bugayenko (yegor@tpc2.com)
- * @version $Id$
  * @since 0.4
- * @checkstyle ClassDataAbstractionCoupling (500 lines)
  */
 @Immutable
 @ToString
-@EqualsAndHashCode(of = "script")
+@EqualsAndHashCode(of = { "key", "temp" })
 final class Git {
 
     /**
@@ -44,39 +41,23 @@ final class Git {
     private static final String SSH = "/usr/bin/ssh";
 
     /**
-     * Location of shell script.
+     * Location of SSH key.
      */
-    private final transient String script;
+    private final transient File key;
+
+    /**
+     * Directory to keep the SSH script in.
+     */
+    private final transient File temp;
 
     /**
      * Public ctor.
-     * @param key Location of SSH key
-     * @param temp Temp directory
-     * @throws IOException If some error inside
+     * @param pem Location of SSH key
+     * @param dir Temp directory
      */
-    public Git(@NotNull final File key,
-        @NotNull final File temp) throws IOException {
-        if (!new File(Git.SSH).exists()) {
-            throw new IllegalStateException(
-                String.format("SSH is not installed at '%s'", Git.SSH)
-            );
-        }
-        final File kfile = new File(temp, "heroku.pem");
-        FileUtils.copyFile(key, kfile);
-        this.chmod(kfile, Git.PERMS);
-        final File file = new File(temp, "git-ssh.sh");
-        this.script = file.getAbsolutePath();
-        FileUtils.writeStringToFile(
-            new File(this.script),
-            String.format(
-                // @checkstyle LineLength (1 line)
-                "set -x && %s -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i '%s' $@",
-                Git.SSH,
-                kfile.getAbsolutePath()
-            ),
-            StandardCharsets.UTF_8
-        );
-        file.setExecutable(true);
+    Git(@NotNull final File pem, @NotNull final File dir) {
+        this.key = pem;
+        this.temp = dir;
     }
 
     /**
@@ -84,20 +65,48 @@ final class Git {
      * @param dir In which directory to run it
      * @param args Arguments to pass to it
      * @return Stdout
-     * @checkstyle MagicNumber (2 lines)
+     * @throws IOException If some error inside
      */
     @RetryOnFailure(delay = 3000, attempts = 2)
-    public String exec(@NotNull final File dir, @NotNull final String... args) {
-        final List<String> commands = new ArrayList<String>(args.length + 1);
+    String exec(@NotNull final File dir, @NotNull final String... args)
+        throws IOException {
+        final List<String> commands = new ArrayList<>(args.length + 1);
         commands.add("git");
-        for (final String arg : args) {
-            commands.add(arg);
-        }
+        commands.addAll(Arrays.asList(args));
         Logger.info(this, "%s:...", StringUtils.join(commands, " "));
         final ProcessBuilder builder = new ProcessBuilder(commands);
         builder.directory(dir);
-        builder.environment().put("GIT_SSH", this.script);
+        builder.environment().put("GIT_SSH", this.script());
         return new VerboseProcess(builder).stdout();
+    }
+
+    /**
+     * Make a shell script that teaches Git to use our SSH key.
+     * @return Absolute location of the script
+     * @throws IOException If some error inside
+     */
+    private String script() throws IOException {
+        if (!new File(Git.SSH).exists()) {
+            throw new IllegalStateException(
+                String.format("SSH is not installed at '%s'", Git.SSH)
+            );
+        }
+        final File pem = new File(this.temp, "heroku.pem");
+        FileUtils.copyFile(this.key, pem);
+        this.chmod(pem, Git.PERMS);
+        final File file = new File(this.temp, "git-ssh.sh");
+        FileUtils.writeStringToFile(
+            file,
+            String.format(
+                // @checkstyle LineLength (1 line)
+                "set -x && %s -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i '%s' $@",
+                Git.SSH,
+                pem.getAbsolutePath()
+            ),
+            StandardCharsets.UTF_8
+        );
+        file.setExecutable(true);
+        return file.getAbsolutePath();
     }
 
     /**
@@ -105,8 +114,6 @@ final class Git {
      * @param file The file to change
      * @param mode Permissions to set
      * @throws IOException If some error inside
-     * @see http://stackoverflow.com/questions/664432
-     * @see http://stackoverflow.com/questions/1556119
      */
     private void chmod(final File file, final int mode) throws IOException {
         new VerboseProcess(
@@ -123,5 +130,4 @@ final class Git {
             mode
         );
     }
-
 }

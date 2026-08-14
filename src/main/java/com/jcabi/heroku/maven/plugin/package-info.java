@@ -14,8 +14,6 @@
  *   &lt;artifactId&gt;jcabi-heroku-maven-plugin&lt;/artifactId&gt;
  * &lt;/dependency&gt;</pre>
  *
- * @author Yegor Bugayenko (yegor@tpc2.com)
- * @version $Id$
  * @since 0.4
  * @see <a href="http://www.jcabi.com/jcabi-heroku-maven-plugin">project website</a>
  */

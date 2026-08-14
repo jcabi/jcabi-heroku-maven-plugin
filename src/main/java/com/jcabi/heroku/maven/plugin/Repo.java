@@ -9,7 +9,7 @@ import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
+import java.time.Instant;
 import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -17,9 +17,6 @@ import org.apache.commons.io.FileUtils;
 
 /**
  * Local Git repository.
- *
- * @author Yegor Bugayenko (yegor@tpc2.com)
- * @version $Id$
  * @since 0.4
  */
 @Immutable
@@ -35,16 +32,16 @@ final class Repo {
     /**
      * Location of repository.
      */
-    private final transient String path;
+    private final transient File path;
 
     /**
      * Public ctor.
      * @param engine Git engine
      * @param file Location of repository
      */
-    public Repo(@NotNull final Git engine, @NotNull final File file) {
+    Repo(@NotNull final Git engine, @NotNull final File file) {
         this.git = engine;
-        this.path = file.getAbsolutePath();
+        this.path = file;
     }
 
     /**
@@ -53,12 +50,11 @@ final class Repo {
      * @param content Content of the file to write (overwrite)
      * @throws IOException If fails
      */
-    public void add(@NotNull final String name, @NotNull final String content)
+    void add(@NotNull final String name, @NotNull final String content)
         throws IOException {
-        final File dir = new File(this.path);
-        final File file = new File(dir, name);
+        final File file = new File(this.path, name);
         FileUtils.writeStringToFile(file, content, StandardCharsets.UTF_8);
-        this.git.exec(dir, "add", name);
+        this.git.exec(this.path, "add", name);
         Logger.info(
             this,
             "File %s updated, %[size]s",
@@ -69,23 +65,22 @@ final class Repo {
 
     /**
      * Commit changes and push.
+     * @throws IOException If fails
      */
-    public void commit() {
-        final File dir = new File(this.path);
-        this.git.exec(dir, "status");
+    void commit() throws IOException {
+        this.git.exec(this.path, "status");
         this.git.exec(
-            dir,
+            this.path,
             "commit",
             "-am",
-            new Date().toString()
+            Instant.now().toString()
         );
         this.git.exec(
-            dir,
+            this.path,
             "push",
             "origin",
             "master"
         );
         Logger.info(this, "Repository commited to Heroku");
     }
-
 }

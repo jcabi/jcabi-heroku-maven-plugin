@@ -75,15 +75,31 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>org.hibernate</groupId>
+      <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
       <version>6.2.5.Final</version>
       <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <!--
+          The same classes come from javax.validation:validation-api,
+          which is inherited from the parent POM.
+          -->
+          <groupId>jakarta.validation</groupId>
+          <artifactId>jakarta.validation-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
-      <groupId>com.rexsl</groupId>
-      <artifactId>rexsl-test</artifactId>
-      <version>0.13.3</version>
+      <!-- Required for Hibernate validator, in runtime -->
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.el</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-matchers</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>xml-apis</groupId>

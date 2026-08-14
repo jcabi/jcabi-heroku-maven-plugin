@@ -5,46 +5,35 @@
 package com.jcabi.heroku.maven.plugin;
 
 import java.io.File;
-import org.apache.commons.io.FileUtils;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link Git}.
- * @author Yegor Bugayenko (yegor@tpc2.com)
- * @version $Id$
+ * @since 0.4
  */
-public final class GitTest {
+final class GitTest {
 
-    /**
-     * Temporary folder.
-     * @checkstyle VisibilityModifier (3 lines)
-     */
-    @Rule
-    public transient TemporaryFolder temp = new TemporaryFolder();
-
-    /**
-     * Git can execute simple git command.
-     * @throws Exception If something is wrong
-     */
     @Test
-    @org.junit.Ignore
-    public void clonesSimpleGitRepository() throws Exception {
-        final File key = this.temp.newFile();
-        FileUtils.writeStringToFile(key, "");
-        final File folder = this.temp.newFolder();
-        final Git git = new Git(key, folder);
+    @Disabled
+    void clonesSimpleGitRepository(@TempDir final Path temp) throws Exception {
+        final File folder = temp.resolve("repo").toFile();
         MatcherAssert.assertThat(
-            git.exec(
+            "the repository cannot stay uninitialized",
+            new Git(
+                Files.writeString(temp.resolve("key.pem"), "").toFile(),
+                folder
+            ).exec(
                 folder.getParentFile(),
                 "init",
-                this.temp.newFolder().getPath()
+                temp.resolve("fresh").toString()
             ),
             Matchers.containsString("Initialized empty Git repository")
         );
     }
-
 }

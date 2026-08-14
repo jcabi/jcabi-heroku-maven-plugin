@@ -7,15 +7,13 @@ package com.jcabi.heroku.maven.plugin;
 import com.jcabi.aspects.Immutable;
 import com.jcabi.log.Logger;
 import java.io.File;
+import java.io.IOException;
 import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
  * Heroku platform.
- *
- * @author Yegor Bugayenko (yegor@tpc2.com)
- * @version $Id$
  * @since 0.4
  */
 @Immutable
@@ -38,7 +36,7 @@ final class Heroku {
      * @param engine Git engine
      * @param project Project name in Heroku
      */
-    public Heroku(@NotNull final Git engine, @NotNull final String project) {
+    Heroku(@NotNull final Git engine, @NotNull final String project) {
         this.git = engine;
         this.name = project;
     }
@@ -47,8 +45,9 @@ final class Heroku {
      * Clone repo into local copy.
      * @param path Where to copy
      * @return The repo
+     * @throws IOException If some error inside
      */
-    public Repo clone(@NotNull final File path) {
+    Repo clone(@NotNull final File path) throws IOException {
         this.git.exec(
             path.getParentFile(),
             "clone",
@@ -64,7 +63,6 @@ final class Heroku {
         );
         this.git.exec(
             path,
-            // @checkstyle MultipleStringLiterals (1 line)
             "config",
             "user.name",
             "jcabi-heroku-maven-plugin"
@@ -77,5 +75,4 @@ final class Heroku {
         );
         return new Repo(this.git, path);
     }
-
 }

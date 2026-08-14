@@ -5,52 +5,39 @@
 package com.jcabi.heroku.maven.plugin;
 
 import java.io.File;
+import java.nio.file.Path;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link Heroku}.
- * @author Yegor Bugayenko (yegor@tpc2.com)
- * @version $Id$
+ * @since 0.4
  */
-public final class HerokuTest {
+final class HerokuTest {
 
-    /**
-     * Temporary folder.
-     * @checkstyle VisibilityModifier (3 lines)
-     */
-    @Rule
-    public transient TemporaryFolder temp = new TemporaryFolder();
-
-    /**
-     * Heroku can execute simple git command.
-     * @throws Exception If something is wrong
-     */
     @Test
-    public void clonesSimpleHerokuRepository() throws Exception {
-        final File key = this.temp.newFile();
-        FileUtils.writeStringToFile(
-            key,
-            IOUtils.toString(this.getClass().getResource("test-key.pem"))
+    void clonesSimpleHerokuRepository(@TempDir final Path temp)
+        throws Exception {
+        final File key = temp.resolve("key.pem").toFile();
+        FileUtils.copyURLToFile(
+            HerokuTest.class.getResource("test-key.pem"),
+            key
         );
-        try {
-            new Heroku(
-                new Git(key, this.temp.newFolder()),
-                "jcabi"
-            ).clone(this.temp.newFolder());
-            Assert.fail("exception was expected");
-        } catch (final IllegalArgumentException ex) {
-            MatcherAssert.assertThat(
-                ex.getMessage(),
-                Matchers.containsString("Non-zero exit code ")
-            );
-        }
+        MatcherAssert.assertThat(
+            "the failure of the clone cannot be reported differently",
+            Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> new Heroku(
+                    new Git(key, temp.resolve("git").toFile()),
+                    "jcabi"
+                ).clone(temp.resolve("clone").toFile()),
+                "the clone of an unreachable repository cannot succeed"
+            ).getMessage(),
+            Matchers.containsString("Non-zero exit code ")
+        );
     }
-
 }

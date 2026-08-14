@@ -7,6 +7,7 @@ package com.jcabi.heroku.maven.plugin;
 import com.jcabi.log.Logger;
 import com.jcabi.velocity.VelocityPage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.maven.artifact.Artifact;
@@ -23,9 +24,6 @@ import org.slf4j.impl.StaticLoggerBinder;
 
 /**
  * Deploys JAR/WAR artifact to Heroku.
- *
- * @author Yegor Bugayenko (yegor@tpc2.com)
- * @version $Id$
  * @since 0.4
  */
 @Mojo(
@@ -93,7 +91,6 @@ public final class DeployMojo extends AbstractMojo {
     }
 
     @Override
-    @SuppressWarnings("PMD.PrematureDeclaration")
     public void execute() throws MojoFailureException {
         StaticLoggerBinder.getSingleton().setMavenLog(this.getLog());
         if (this.skip) {
@@ -101,11 +98,13 @@ public final class DeployMojo extends AbstractMojo {
             return;
         }
         final long start = System.currentTimeMillis();
-        final Heroku heroku = new Heroku(this.git(), this.name);
-        final Repo repo = heroku.clone(
-            new File(new File(this.project.getBuild().getDirectory()), "heroku")
-        );
         try {
+            final Repo repo = new Heroku(this.git(), this.name).clone(
+                new File(
+                    new File(this.project.getBuild().getDirectory()),
+                    "heroku"
+                )
+            );
             repo.add(
                 "settings.xml",
                 new VelocityPage(
@@ -116,16 +115,15 @@ public final class DeployMojo extends AbstractMojo {
                 "pom.xml",
                 new VelocityPage(
                     "com/jcabi/heroku/maven/plugin/pom.xml.vm"
-                ).set("project", this.project)
-                    .set("deps", this.deps())
+                ).set("project", this.project).set("deps", this.deps())
                     .set("timestamp", System.currentTimeMillis())
                     .toString()
             );
             repo.add("Procfile", this.procfile.trim());
-        } catch (final java.io.IOException ex) {
-            throw new MojoFailureException("failed to save files", ex);
+            repo.commit();
+        } catch (final IOException ex) {
+            throw new MojoFailureException("failed to deploy to Heroku", ex);
         }
-        repo.commit();
         Logger.info(this, "Done in %[ms]s", System.currentTimeMillis() - start);
     }
 
@@ -159,14 +157,10 @@ public final class DeployMojo extends AbstractMojo {
                 String.format("SSH key file '%s' doesn't exist", file)
             );
         }
-        try {
-            return new Git(
-                file,
-                new File(this.project.getBuild().getDirectory())
-            );
-        } catch (final java.io.IOException ex) {
-            throw new MojoFailureException("failed to initialize git", ex);
-        }
+        return new Git(
+            file,
+            new File(this.project.getBuild().getDirectory())
+        );
     }
 
     /**
@@ -179,19 +173,17 @@ public final class DeployMojo extends AbstractMojo {
      * @throws MojoFailureException If somethings goes wrong
      * @see <a href="http://maven.apache.org/pom.html#Maven_Coordinates">Maven coordinates</a>
      */
-    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     private List<Artifact> deps() throws MojoFailureException {
         if (this.artifacts.length == 0) {
             throw new MojoFailureException(
                 "At least one artifact should be configured"
             );
         }
-        final List<Artifact> deps = new ArrayList<Artifact>(
+        final List<Artifact> deps = new ArrayList<>(
             this.artifacts.length
         );
         for (final String coordinates : this.artifacts) {
             final String[] parts = coordinates.split(":");
-            // @checkstyle MagicNumber (1 line)
             if (parts.length != 5) {
                 throw new MojoFailureException(
                     String.format(
@@ -201,7 +193,6 @@ public final class DeployMojo extends AbstractMojo {
                 );
             }
             deps.add(
-                // @checkstyle MagicNumber (10 lines)
                 new DefaultArtifact(
                     parts[0],
                     parts[1],
@@ -215,5 +206,4 @@ public final class DeployMojo extends AbstractMojo {
         }
         return deps;
     }
-
 }
