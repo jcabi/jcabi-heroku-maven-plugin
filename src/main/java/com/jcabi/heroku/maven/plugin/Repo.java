@@ -81,6 +81,6 @@ final class Repo {
             "origin",
             "master"
         );
-        Logger.info(this, "Repository commited to Heroku");
+        Logger.info(this, "Repository committed to Heroku");
     }
 }

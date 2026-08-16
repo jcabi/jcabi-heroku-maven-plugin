@@ -3,7 +3,7 @@
 ---
 # yamllint disable rule:line-length
 name: pdd
-on:
+'on':
   push:
     branches:
       - master
@@ -16,4 +16,4 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
-      - uses: g4s8/pdd-action@master
+      - uses: volodya-lombrozo/pdd-action@master
