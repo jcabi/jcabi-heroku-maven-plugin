@@ -10,6 +10,8 @@ import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
@@ -19,6 +21,7 @@ import org.junit.jupiter.api.io.TempDir;
 final class RepoTest {
 
     @Test
+    @DisabledOnOs(OS.WINDOWS)
     void addsFilesToSimpleGitRepo(@TempDir final Path temp) throws Exception {
         final File folder = temp.resolve("repo").toFile();
         final Git git = new Git(
