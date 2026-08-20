@@ -127,11 +127,6 @@ public final class DeployMojo extends AbstractMojo {
         Logger.info(this, "Done in %[ms]s", System.currentTimeMillis() - start);
     }
 
-    /**
-     * Get git engine.
-     * @return The engine
-     * @throws MojoFailureException If somethings goes wrong
-     */
     private Git git() throws MojoFailureException {
         final Server srv = this.settings.getServer(this.server);
         if (srv == null) {
@@ -163,16 +158,6 @@ public final class DeployMojo extends AbstractMojo {
         );
     }
 
-    /**
-     * Create a collection of artifacts.
-     *
-     * <p>Coordinates should be formatted as
-     * {@code groupId:artifactId:packaging:classifier:version}.
-     *
-     * @return List of them
-     * @throws MojoFailureException If somethings goes wrong
-     * @see <a href="http://maven.apache.org/pom.html#Maven_Coordinates">Maven coordinates</a>
-     */
     private List<Artifact> deps() throws MojoFailureException {
         if (this.artifacts.length == 0) {
             throw new MojoFailureException(

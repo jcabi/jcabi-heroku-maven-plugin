@@ -80,11 +80,6 @@ final class Git {
         return new VerboseProcess(builder).stdout();
     }
 
-    /**
-     * Make a shell script that teaches Git to use our SSH key.
-     * @return Absolute location of the script
-     * @throws IOException If some error inside
-     */
     private String script() throws IOException {
         if (!new File(Git.SSH).exists()) {
             throw new IllegalStateException(
@@ -108,12 +103,6 @@ final class Git {
         return file.getAbsolutePath();
     }
 
-    /**
-     * Change file permissions.
-     * @param file The file to change
-     * @param mode Permissions to set
-     * @throws IOException If some error inside
-     */
     private void chmod(final File file, final int mode) throws IOException {
         new VerboseProcess(
             new ProcessBuilder(
