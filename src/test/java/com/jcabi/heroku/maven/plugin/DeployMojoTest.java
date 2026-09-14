@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link DeployMojo} (more detailed test is in maven invoker).
+ *
  * @since 0.4
  */
 final class DeployMojoTest {

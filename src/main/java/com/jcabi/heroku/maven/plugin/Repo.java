@@ -17,6 +17,7 @@ import org.apache.commons.io.FileUtils;
 
 /**
  * Local Git repository.
+ *
  * @since 0.4
  */
 @Immutable
@@ -36,6 +37,7 @@ final class Repo {
 
     /**
      * Public ctor.
+     *
      * @param engine Git engine
      * @param file Location of repository
      */
@@ -46,6 +48,7 @@ final class Repo {
 
     /**
      * Add new file.
+     *
      * @param name Name of it
      * @param content Content of the file to write (overwrite)
      * @throws IOException If fails
@@ -65,6 +68,7 @@ final class Repo {
 
     /**
      * Commit changes and push.
+     *
      * @throws IOException If fails
      */
     void commit() throws IOException {

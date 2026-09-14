@@ -22,18 +22,13 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * Git engine.
+ *
  * @since 0.4
  */
 @Immutable
 @ToString
 @EqualsAndHashCode(of = { "key", "temp" })
 final class Git {
-
-    /**
-     * Permissions to set to SSH key file.
-     */
-    @SuppressWarnings("PMD.AvoidUsingOctalValues")
-    private static final int PERMS = 0600;
 
     /**
      * Default SSH location.
@@ -52,6 +47,7 @@ final class Git {
 
     /**
      * Public ctor.
+     *
      * @param pem Location of SSH key
      * @param dir Temp directory
      */
@@ -62,6 +58,7 @@ final class Git {
 
     /**
      * Execute git with these arguments.
+     *
      * @param dir In which directory to run it
      * @param args Arguments to pass to it
      * @return Stdout
@@ -77,9 +74,12 @@ final class Git {
         final ProcessBuilder builder = new ProcessBuilder(commands);
         builder.directory(dir);
         builder.environment().put("GIT_SSH", this.script());
-        return new VerboseProcess(builder).stdout();
+        try (VerboseProcess proc = new VerboseProcess(builder)) {
+            return proc.stdout();
+        }
     }
 
+    @SuppressWarnings("PMD.AvoidUsingOctalValues")
     private String script() throws IOException {
         if (!new File(Git.SSH).exists()) {
             throw new IllegalStateException(
@@ -88,7 +88,7 @@ final class Git {
         }
         final File pem = new File(this.temp, "heroku.pem");
         FileUtils.copyFile(this.key, pem);
-        this.chmod(pem, Git.PERMS);
+        this.chmod(pem, 0600);
         final File file = new File(this.temp, "git-ssh.sh");
         FileUtils.writeStringToFile(
             file,
@@ -104,13 +104,17 @@ final class Git {
     }
 
     private void chmod(final File file, final int mode) throws IOException {
-        new VerboseProcess(
-            new ProcessBuilder(
-                "chmod",
-                String.format("%04o", mode),
-                file.getAbsolutePath()
+        try (
+            VerboseProcess proc = new VerboseProcess(
+                new ProcessBuilder(
+                    "chmod",
+                    String.format("%04o", mode),
+                    file.getAbsolutePath()
+                )
             )
-        ).stdout();
+        ) {
+            proc.stdout();
+        }
         Logger.debug(
             this,
             "chmod(%s, %3o): succeeded",

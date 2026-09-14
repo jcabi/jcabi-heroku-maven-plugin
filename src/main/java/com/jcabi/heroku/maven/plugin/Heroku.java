@@ -14,6 +14,7 @@ import lombok.ToString;
 
 /**
  * Heroku platform.
+ *
  * @since 0.4
  */
 @Immutable
@@ -33,6 +34,7 @@ final class Heroku {
 
     /**
      * Public ctor.
+     *
      * @param engine Git engine
      * @param project Project name in Heroku
      */
@@ -43,6 +45,7 @@ final class Heroku {
 
     /**
      * Clone repo into local copy.
+     *
      * @param path Where to copy
      * @return The repo
      * @throws IOException If some error inside

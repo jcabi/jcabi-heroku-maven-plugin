@@ -24,6 +24,7 @@ import org.slf4j.impl.StaticLoggerBinder;
 
 /**
  * Deploys JAR/WAR artifact to Heroku.
+ *
  * @since 0.4
  */
 @Mojo(
@@ -84,6 +85,7 @@ public final class DeployMojo extends AbstractMojo {
 
     /**
      * Set skip option.
+     *
      * @param skp Shall we skip execution?
      */
     public void setSkip(final boolean skp) {

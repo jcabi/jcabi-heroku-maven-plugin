@@ -16,6 +16,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link Repo}.
+ *
  * @since 0.4
  */
 final class RepoTest {
