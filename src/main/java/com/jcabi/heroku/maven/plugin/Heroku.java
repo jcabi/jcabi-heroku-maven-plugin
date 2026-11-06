@@ -11,6 +11,7 @@ import java.io.IOException;
 import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.apache.commons.io.FileUtils;
 
 /**
  * Heroku platform.
@@ -51,6 +52,7 @@ final class Heroku {
      * @throws IOException If some error inside
      */
     Repo clone(@NotNull final File path) throws IOException {
+        FileUtils.deleteDirectory(path);
         this.git.exec(
             path.getParentFile(),
             "clone",

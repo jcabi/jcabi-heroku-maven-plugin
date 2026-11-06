@@ -5,6 +5,9 @@
 package com.jcabi.heroku.maven.plugin;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import org.apache.commons.io.FileUtils;
 import org.hamcrest.MatcherAssert;
@@ -42,6 +45,30 @@ final class HerokuTest {
                 "the clone of an unreachable repository cannot succeed"
             ).getMessage(),
             Matchers.containsString("Non-zero exit code ")
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void removesPreviousCloneBeforeCloning(@TempDir final Path temp)
+        throws Exception {
+        final Path destination = temp.resolve("clone");
+        FileUtils.writeStringToFile(
+            destination.resolve("stale.txt").toFile(),
+            "previous deployment",
+            StandardCharsets.UTF_8
+        );
+        Assertions.assertThrows(
+            IOException.class,
+            () -> new Heroku(
+                new Git(temp.resolve("missing.pem").toFile(), temp.toFile()),
+                "jcabi"
+            ).clone(destination.toFile()),
+            "a missing SSH key must stop cloning before contacting Heroku"
+        );
+        Assertions.assertFalse(
+            Files.exists(destination),
+            "the previous deployment must be removed before cloning starts"
         );
     }
 }
