@@ -77,7 +77,9 @@ final class DeployMojoTest {
             ).set("project", project).set("timestamp", "332211").set(
                 "deps",
                 Collections.singletonList(
-                    new DefaultArtifact("fooo", "", "", "", "", "", null)
+                    new DefaultArtifact(
+                        "fooo", "sample", "1.0", "runtime", "jar", "", null
+                    )
                 )
             ).toString(),
             Matchers.allOf(
