@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.plugin.AbstractMojo;
@@ -111,7 +112,8 @@ public final class DeployMojo extends AbstractMojo {
                 "settings.xml",
                 new VelocityPage(
                     "com/jcabi/heroku/maven/plugin/settings.xml.vm"
-                ).set("settings", this.settings).toString()
+                ).set("settings", this.settings)
+                    .set("xml", StringEscapeUtils.ESCAPE_XML10).toString()
             );
             repo.add(
                 "pom.xml",
@@ -119,6 +121,7 @@ public final class DeployMojo extends AbstractMojo {
                     "com/jcabi/heroku/maven/plugin/pom.xml.vm"
                 ).set("project", this.project).set("deps", this.deps())
                     .set("timestamp", System.currentTimeMillis())
+                    .set("xml", StringEscapeUtils.ESCAPE_XML10)
                     .toString()
             );
             repo.add("Procfile", this.procfile.trim());

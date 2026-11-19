@@ -4,17 +4,17 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>${project.getGroupId()}</groupId>
-    <artifactId>${project.getArtifactId()}-pom</artifactId>
+    <groupId>${xml.translate($project.getGroupId())}</groupId>
+    <artifactId>${xml.translate($project.getArtifactId())}-pom</artifactId>
     <version>1.0</version>
-    <name>${timestamp}</name>
+    <name>${xml.translate($timestamp.toString())}</name>
     <packaging>pom</packaging>
     <repositories>
         #foreach ($repository in $project.getRepositories())
             <repository>
-                <id>${repository.getId()}</id>
-                <url>${repository.getUrl()}</url>
-                <layout>${repository.getLayout()}</layout>
+                <id>${xml.translate($repository.getId())}</id>
+                <url>${xml.translate($repository.getUrl())}</url>
+                <layout>${xml.translate($repository.getLayout())}</layout>
             </repository>
         #end
     </repositories>
@@ -23,9 +23,9 @@
             #set($build = $project.getBuild())
             #foreach ($ext in $build.getExtensions())
                 <extension>
-                    <groupId>${ext.getGroupId()}</groupId>
-                    <artifactId>${ext.getArtifactId()}</artifactId>
-                    <version>${ext.getVersion()}</version>
+                    <groupId>${xml.translate($ext.getGroupId())}</groupId>
+                    <artifactId>${xml.translate($ext.getArtifactId())}</artifactId>
+                    <version>${xml.translate($ext.getVersion())}</version>
                 </extension>
             #end
         </extensions>
@@ -83,11 +83,11 @@
             <dependencies>
                 #foreach ($item in $deps)
                     <dependency>
-                        <groupId>${item.getGroupId()}</groupId>
-                        <artifactId>${item.getArtifactId()}</artifactId>
-                        <version>${item.getVersion()}</version>
-                        <classifier>${item.getClassifier()}</classifier>
-                        <type>${item.getType()}</type>
+                        <groupId>${xml.translate($item.getGroupId())}</groupId>
+                        <artifactId>${xml.translate($item.getArtifactId())}</artifactId>
+                        <version>${xml.translate($item.getVersion())}</version>
+                        <classifier>${xml.translate($item.getClassifier())}</classifier>
+                        <type>${xml.translate($item.getType())}</type>
                     </dependency>
                 #end
             </dependencies>
