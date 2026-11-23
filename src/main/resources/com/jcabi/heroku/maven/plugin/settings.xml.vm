@@ -7,13 +7,13 @@
         #foreach ($server in $settings.getServers())
             <server>
                 #if ($server.getId())
-                    <id>${server.getId()}</id>
+                    <id>${xml.translate($server.getId())}</id>
                 #end
                 #if ($server.getUsername())
-                    <username>${server.getUsername()}</username>
+                    <username>${xml.translate($server.getUsername())}</username>
                 #end
                 #if ($server.getPassword())
-                    <password>${server.getPassword()}</password>
+                    <password>${xml.translate($server.getPassword())}</password>
                 #end
                 #if ($server.getPrivateKey())
                     <!--
@@ -23,7 +23,7 @@
                     -->
                 #end
                 #if ($server.getPassphrase())
-                    <passphrase>${server.getPassphrase()}</passphrase>
+                    <passphrase>${xml.translate($server.getPassphrase())}</passphrase>
                 #end
             </server>
         #end
